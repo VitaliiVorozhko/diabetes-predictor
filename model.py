@@ -16,13 +16,6 @@ MODEL_FILE = "regression_model.joblib"
 
 
 def load_data() -> tuple[pd.DataFrame, pd.Series]:
-    """
-    Завантажує датасет diabetes (вбудований у scikit-learn, інтернет не потрібен).
-
-    scaled=False повертає ознаки в реальних одиницях (вік у роках, ІМТ, тиск),
-    а не в стандартизованому вигляді, тому слайдери в застосунку зрозумілі людині.
-    Ціль (target) - індекс прогресування хвороби через рік після базового виміру.
-    """
     data = load_diabetes(scaled=False, as_frame=True)
     X = data.data[FEATURES]
     y = data.target
@@ -30,13 +23,6 @@ def load_data() -> tuple[pd.DataFrame, pd.Series]:
 
 
 def train_regression_model(X_train: ArrayLike, y_train: ArrayLike, degree: int = 2) -> Pipeline:
-    """
-    Навчає поліноміальну регресію з регуляризацією (Ridge).
-
-    Pipeline: масштабування -> поліноміальні ознаки -> Ridge.
-    Масштабування потрібне, щоб ознаки в різних одиницях (роки, ІМТ, мм рт. ст.)
-    не домінували одна над одною; Ridge стримує перенавчання на малій вибірці (442 рядки).
-    """
     model = Pipeline([
         ("scaler", StandardScaler()),
         ("poly", PolynomialFeatures(degree=degree, include_bias=False)),
@@ -47,16 +33,11 @@ def train_regression_model(X_train: ArrayLike, y_train: ArrayLike, degree: int =
 
 
 def save_regression_model(model: Pipeline, filename: str = MODEL_FILE):
-    """Зберігає навчений pipeline на диск (joblib)."""
     dump(model, filename)
 
 
 def evaluate_regression_model(model: Pipeline, X_test: ArrayLike, y_test: ArrayLike,
                               X_train: ArrayLike | None = None, y_train: ArrayLike | None = None) -> dict:
-    """
-    Рахує MSE та R^2 на тестових даних, друкує їх і повертає словником.
-    Якщо передано train-дані, додатково порівнює з простою лінійною регресією (baseline).
-    """
     y_pred = model.predict(X_test)
     mse = mean_squared_error(y_test, y_pred)
     r2 = r2_score(y_test, y_pred)
@@ -74,7 +55,6 @@ def evaluate_regression_model(model: Pipeline, X_test: ArrayLike, y_test: ArrayL
 
 
 def save_initial_datasets(X: ArrayLike, y: ArrayLike, metrics: dict | None = None):
-    """Зберігає повні X та y (для графіка) і метрики моделі (для відображення в застосунку)."""
     dump(X, "X.joblib")
     dump(y, "y.joblib")
     if metrics is not None:
