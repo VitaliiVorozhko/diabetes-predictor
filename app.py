@@ -31,7 +31,6 @@ def get_data():
 
 
 def load_and_predict(X: ArrayLike, filename: str = MODEL_FILE) -> np.ndarray:
-    """Завантажує збережену модель і повертає прогноз для переданих даних."""
     model = get_model(filename)
     return model.predict(X)
 
