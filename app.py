@@ -14,7 +14,6 @@ st.set_page_config(page_title="Прогноз прогресування діа�
 
 @st.cache_resource
 def get_model(filename: str = MODEL_FILE):
-    """Завантажує модель; якщо файл відсутній (або несумісна версія sklearn) - донавчає її."""
     try:
         return load(filename)
     except Exception:
@@ -38,11 +37,7 @@ def load_and_predict(X: ArrayLike, filename: str = MODEL_FILE) -> np.ndarray:
 
 
 def visualize_difference(age: float, bmi: float, bp: float, prediction: ArrayLike):
-    """
-    Графік: усі пацієнти (сірі точки), крива моделі по ІМТ при заданих віці й тиску,
-    червона точка - прогноз для користувача, синя - найближчий реальний пацієнт,
-    штрихова лінія - різниця між ними.
-    """
+
     X, y, _ = get_data()
     pred_value = float(np.asarray(prediction).ravel()[0])
 
@@ -87,9 +82,6 @@ def create_streamlit_app():
 
     st.title("🩺 Прогноз прогресування діабету")
     st.write(
-        "Застосунок оцінює, наскільки швидко прогресуватиме захворювання через рік, "
-        "за віком, індексом маси тіла (ІМТ) і середнім артеріальним тиском. "
-        "Дані: класичний датасет *diabetes* (442 пацієнти), модель: поліноміальна Ridge-регресія."
     )
 
     st.sidebar.header("Вхідні параметри")
